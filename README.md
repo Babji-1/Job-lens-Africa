@@ -94,7 +94,7 @@ streamlit run app.py
 |----------|------|
 | 🌐 Live Application | *(Coming Soon)* |
 | 📊 [Tableau Dashboard](https://public.tableau.com/app/profile/kennedy.kiiru/viz/Book1_17852643851940/Dashboard1)
-| 🎤 Project Presentation | *(Coming Soon)* |
+| 🎤 [Project Presentation] |(https://canva.link/lwto0pijfv2ljhd) |
 | 💻 Source Code(https://github.com/Babji-1/job-lens-Africa)
 
 ---
