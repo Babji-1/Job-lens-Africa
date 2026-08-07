@@ -8,3 +8,4 @@ scikit-learn
 prophet
 joblib
 openpyxl
+statsmodels
