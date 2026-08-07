@@ -34,7 +34,7 @@ The platform transforms labour market data into interactive visualizations and p
 
 ---
 # Exploratory Data Analysis:
-![alt text](image.png)
+![alt text](image-4.png)
 * Service provisions have employed the highest number of people
 
 ![alt text](image-1.png)
