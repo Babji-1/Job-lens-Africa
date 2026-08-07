@@ -33,6 +33,17 @@ The platform transforms labour market data into interactive visualizations and p
 - Data Quality Indicators
 
 ---
+# Exploratory Data Analysis:
+![alt text](image.png)
+* Service provisions have employed the highest number of people
+
+![alt text](image-1.png)
+* Under the minor sector, agriculture individually has the highest number of employees.
+
+![alt text](image-3.png)
+* Over time, service provision has been generally employing a higher workforce gradually.
+
+---
 
 # Tech Stack
 
@@ -94,8 +105,8 @@ streamlit run app.py
 |----------|------|
 | 🌐 Live Application | *(Coming Soon)* |
 | 📊 [Tableau Dashboard](https://public.tableau.com/app/profile/kennedy.kiiru/viz/Book1_17852643851940/Dashboard1)
-| 🎤 [Project Presentation] |(https://canva.link/lwto0pijfv2ljhd) |
-| 💻 Source Code(https://github.com/Babji-1/job-lens-Africa)
+| 🎤 [Project Presentation] |(https://canva.link/tuibxyagni8shrb) |
+| 💻 Source Code | (https://github.com/Babji-1/job-lens-Africa)
 
 ---
 
