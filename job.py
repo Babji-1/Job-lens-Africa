@@ -85,7 +85,8 @@ if predict:
     history = load_data(model_name)
 
     # Calculate actual integer year milestones
-    last_historical_year = int(history["ds"].iloc[-1])
+        #  FIX: Extract the year directly from the datetime timestamp object
+    last_historical_year = history["ds"].iloc[-1].year
     start_year = last_historical_year + 1
     end_year = last_historical_year + forecast_years
 
