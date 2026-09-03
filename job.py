@@ -119,7 +119,12 @@ if predict:
 
     
     #  FIX: Cleanly parse strings directly to full Pandas Datetime index objects first
-    history_dates = pd.to_datetime(history["ds"])
+    history_dates = pd.to_datetime(history["ds"], format="%Y", errors='coerce')
+    
+    # If the CSV already had full dates, fall back to automatic parsing
+    if history_dates.isna().any():
+        history_dates = pd.to_datetime(history["ds"])
+        
     last_historical_year = history_dates.iloc[-1].year
     
     # Safely generate the clean list of upcoming integer years
