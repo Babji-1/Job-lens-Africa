@@ -103,7 +103,7 @@ streamlit run app.py
 
 | Resource | Link |
 |----------|------|
-| 🌐 Live Application | *(Coming Soon)* |
+| 🌐 Live Application | ([Coming Soon](https://job-lens-africa.streamlit.app/) |
 | 📊 [Tableau Dashboard]|(https://public.tableau.com/app/profile/kennedy.kiiru/viz/Book1_17852643851940/Dashboard1)
 | 🎤 [Project Presentation] |(https://canva.link/tuibxyagni8shrb) |
 | 💻 Source Code | (https://github.com/Babji-1/job-lens-Africa)
