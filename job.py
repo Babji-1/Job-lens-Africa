@@ -117,12 +117,15 @@ if predict:
         forecast.append(current_value)
     # -----------------------------------------------------------------
 
-    # Align clean calendar timeline
-    last_historical_year = int(float(history["ds"].iloc[-1]))
-    future_years_list = list(range(last_historical_year + 1, last_historical_year + forecast_years + 1))
     
+    #  FIX: Cleanly parse strings directly to full Pandas Datetime index objects first
+    history_dates = pd.to_datetime(history["ds"])
+    last_historical_year = history_dates.iloc[-1].year
+    
+    # Safely generate the clean list of upcoming integer years
+    future_years_list = list(range(last_historical_year + 1, last_historical_year + forecast_years + 1))
     future_dates = pd.to_datetime([f"{y}-01-01" for y in future_years_list])
-    history_dates = pd.to_datetime([f"{int(float(y))}-01-01" for y in history["ds"]])
+
 
     forecast_x = [history_dates.iloc[-1]] + list(future_dates)
     forecast_y = [history_y[-1]] + forecast
