@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import numpy as np
 import plotly.graph_objects as go
 from pathlib import Path
 
@@ -28,7 +29,7 @@ def load_model(name):
 @st.cache_data
 def load_data(name):
     df = pd.read_csv(MODEL_PATH / f"{name}.csv")
-    df["ds"] = pd.to_datetime(df["ds"])
+    # Leave df["ds"] as raw numbers/strings for clean plotting conversion
     return df
 
 
@@ -79,40 +80,60 @@ forecast_years = st.sidebar.slider("Forecast Horizon", 1, 5, 5)
 predict = st.sidebar.button("Predict")
 
 # FORECAST
-# FORECAST
 if predict:
     model = load_model(model_name)
     history = load_data(model_name)
 
-    # Calculate actual integer year milestones
-        #  FIX: Extract the year directly from the datetime timestamp object
-    last_historical_year = history["ds"].iloc[-1].year
-    start_year = last_historical_year + 1
-    end_year = last_historical_year + forecast_years
-
     # -----------------------------------------------------------------
-    # FIX: PREDICT BY EXACT CALENDAR INT VALUES
+    # FIX: ROBUST ALGEBRAIC FORECAST Bypasses Internal Statsmodels Indexing
+    # Extracting coefficients directly mathematically projects future values
     # -----------------------------------------------------------------
-    forecast_series = model.predict(start=start_year, end=end_year)
-    forecast = list(forecast_series)
+    # Get parameters: [const, ar.L1, ar.L2, ar.L3]
+    params = model.params
+    const = params.get('const', 0.0)
+    ar_coefs = [params.get('ar.L1', 0.0), params.get('ar.L2', 0.0), params.get('ar.L3', 0.0)]
+    
+    # Work with historical differences since your model is integrated ARIMA(3, 1, 0)
+    history_y = history["y"].tolist()
+    diffs = np.diff(history_y).tolist()
+    
+    # Calculate predictions step-by-step
+    forecast_diffs = []
+    for step in range(forecast_years):
+        # Gather the 3 most recent differences
+        lag_1 = forecast_diffs[-1] if len(forecast_diffs) >= 1 else (diffs[-1] if len(diffs) >= 1 else 0)
+        lag_2 = forecast_diffs[-2] if len(forecast_diffs) >= 2 else (diffs[-2] if len(diffs) >= 2 else 0)
+        lag_3 = forecast_diffs[-3] if len(forecast_diffs) >= 3 else (diffs[-3] if len(diffs) >= 3 else 0)
+        
+        # Calculate new integrated variance element
+        next_diff = const + ar_coefs[0]*lag_1 + ar_coefs[1]*lag_2 + ar_coefs[2]*lag_3
+        forecast_diffs.append(next_diff)
+    
+    # Reconstruct original scales (undifferencing)
+    forecast = []
+    current_value = history_y[-1]
+    for d in forecast_diffs:
+        current_value += d
+        forecast.append(current_value)
     # -----------------------------------------------------------------
 
-    future_dates = pd.date_range(
-        start=pd.to_datetime(f"{start_year}-01-01"),
-        periods=forecast_years,
-        freq="YS"
-    )
+    # Align clean calendar timeline
+    last_historical_year = int(float(history["ds"].iloc[-1]))
+    future_years_list = list(range(last_historical_year + 1, last_historical_year + forecast_years + 1))
+    
+    future_dates = pd.to_datetime([f"{y}-01-01" for y in future_years_list])
+    history_dates = pd.to_datetime([f"{int(float(y))}-01-01" for y in history["ds"]])
 
-    forecast_x = [pd.to_datetime(f"{last_historical_year}-01-01")] + list(future_dates)
-    forecast_y = [history["y"].iloc[-1]] + forecast
+    forecast_x = [history_dates.iloc[-1]] + list(future_dates)
+    forecast_y = [history_y[-1]] + forecast
 
     fig = go.Figure()
 
     # Historical
     fig.add_trace(
         go.Scatter(
-            x=pd.to_datetime(history["ds"], format="%Y"), # Parse as standard calendar format
-            y=history["y"],
+            x=history_dates,
+            y=history_y,
             mode="lines+markers",
             name="Historical",
             line=dict(color="#2E8B57", width=3)
@@ -155,12 +176,11 @@ if predict:
 
     st.dataframe(
         pd.DataFrame({
-            "Year": future_dates.year,
+            "Year": future_years_list,
             "Forecast Employment": [round(val, 2) for val in forecast]
         }),
         use_container_width=True
     )
-
 
 # FOOTER
 st.markdown("---")
