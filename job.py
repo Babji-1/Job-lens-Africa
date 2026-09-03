@@ -79,30 +79,30 @@ forecast_years = st.sidebar.slider("Forecast Horizon", 1, 5, 5)
 predict = st.sidebar.button("Predict")
 
 # FORECAST
+# FORECAST
 if predict:
     model = load_model(model_name)
     history = load_data(model_name)
 
+    # Calculate actual integer year milestones
+    last_historical_year = int(history["ds"].iloc[-1])
+    start_year = last_historical_year + 1
+    end_year = last_historical_year + forecast_years
+
     # -----------------------------------------------------------------
-    # FIX: PRODUCTION-SAFE INDEX PREDICTION
-    # Using row-count indices instead of .forecast(steps=...) 
-    # to avoid system pointer errors in cloud deployments.
+    # FIX: PREDICT BY EXACT CALENDAR INT VALUES
     # -----------------------------------------------------------------
-    start_idx = len(history)
-    end_idx = start_idx + forecast_years - 1
-    
-    # Run prediction safely across different OS/environments
-    forecast_series = model.predict(start=start_idx, end=end_idx)
+    forecast_series = model.predict(start=start_year, end=end_year)
     forecast = list(forecast_series)
     # -----------------------------------------------------------------
 
     future_dates = pd.date_range(
-        start=history["ds"].max() + pd.DateOffset(years=1),
+        start=pd.to_datetime(f"{start_year}-01-01"),
         periods=forecast_years,
         freq="YS"
     )
 
-    forecast_x = [history["ds"].iloc[-1]] + list(future_dates)
+    forecast_x = [pd.to_datetime(f"{last_historical_year}-01-01")] + list(future_dates)
     forecast_y = [history["y"].iloc[-1]] + forecast
 
     fig = go.Figure()
@@ -110,7 +110,7 @@ if predict:
     # Historical
     fig.add_trace(
         go.Scatter(
-            x=history["ds"],
+            x=pd.to_datetime(history["ds"], format="%Y"), # Parse as standard calendar format
             y=history["y"],
             mode="lines+markers",
             name="Historical",
@@ -159,6 +159,7 @@ if predict:
         }),
         use_container_width=True
     )
+
 
 # FOOTER
 st.markdown("---")
