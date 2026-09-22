@@ -1,8 +1,8 @@
-# 🌍 Job-lens - An African employment trend and forecasting platform.
+# 🌍 AfriWork - An African employment trend and forecasting platform.
 
 ## Project Description
 
-Job-lens is a data-driven solution developed to analyze historical employment trends across African countries and forecast future employment patterns .
+AfriWork is a data-driven solution developed to analyze historical employment trends across African countries and forecast future employment patterns .
 The platform transforms labour market data into interactive visualizations and predictive insights to support evidence-based decision-making for policymakers, researchers, investors, and job seekers.
 
 ---
@@ -64,13 +64,13 @@ The platform transforms labour market data into interactive visualizations and p
 1. Clone the repository.
 
 ```bash
-git clone https://github.com/Babji-1/labourlens.git
+git clone https://github.com/Babji-1/Job-lens-Africa
 ```
 
 2. Navigate into the project folder.
 
 ```bash
-cd labourlens
+cd Job-lens-Africa
 ```
 
 3. Install the required packages.
